@@ -21,7 +21,6 @@
             font-family: 'Noto Sans TC', sans-serif;
             color: var(--text-color);
             -webkit-font-smoothing: antialiased;
-            /* 允許捲動以應對長內容 */
             overflow-x: hidden;
             overflow-y: auto;
         }
@@ -44,8 +43,12 @@
         .home-bg-wrap { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
         .home-bg-wrap img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* 防止 iOS 藍色連結 */
-        button, a, .option-btn { color: var(--text-color) !important; text-decoration: none !important; -webkit-tap-highlight-color: transparent; }
+        /* 防禦 iOS 藍色連結字體 */
+        button, a, .option-btn { 
+            color: var(--text-color) !important; 
+            text-decoration: none !important; 
+            -webkit-tap-highlight-color: transparent; 
+        }
 
         .btn-outline { 
             background-color: rgba(255,255,255,0.3); border: 1px solid var(--text-color);
@@ -55,11 +58,13 @@
         }
 
         #quiz-content { width: 100%; min-height: 380px; transition: opacity 0.5s var(--ease); margin-top: 50px; }
-        .question-text { font-family: 'Noto Serif TC', serif; font-size: 24px; line-height: 1.6; margin-bottom: 40px; font-weight: 700; }
+        .question-text { font-family: 'Noto Serif TC', serif; font-size: 24px; line-height: 1.6; margin-bottom: 40px; font-weight: 700; color: var(--text-color) !important; }
+        
         .option-btn { 
             width: 100%; padding: 22px 25px; border: 1.5px solid rgba(0,0,0,0.08); 
             margin-bottom: 15px; cursor: pointer; font-size: 19px; background: #FFF; 
             text-align: left; border-radius: 8px; font-family: 'Noto Serif TC', serif;
+            color: var(--text-color) !important;
         }
 
         .view-transition {
@@ -71,8 +76,8 @@
         .trans-img-box { width: 75%; max-width: 350px; }
         .trans-img-box img { width: 100%; height: auto; }
 
-        /* 結果頁樣式優化 */
-        #view-result { justify-content: flex-start; padding-top: 60px; }
+        /* 結果頁優化 */
+        #view-result { justify-content: flex-start; padding-top: 50px; }
         .result-card-img { width: 100%; height: auto; margin-bottom: 25px; opacity: 0; transition: opacity 1.2s; cursor: pointer; }
         
         .action-btn { 
@@ -81,46 +86,49 @@
             font-size: 17px; text-align: center; border-radius: 4px; margin-bottom: 12px; border: none;
         }
         
+        /* 重新測驗按鈕 */
         .restart-btn { 
-            background: #FFF; border: 1px solid #CCC; color: #777 !important;
-            padding: 15px 0; width: 100%; font-size: 15px; border-radius: 4px; margin-top: 10px;
+            background: #FFF; border: 1px solid #DDD; color: #888 !important;
+            padding: 15px 0; width: 100%; font-size: 15px; border-radius: 4px; margin-top: 15px;
+            font-family: 'Noto Serif TC', serif;
         }
 
-        /* 浮動提示提示 */
+        /* 浮動導引提示 */
         #scroll-hint {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            background: rgba(0,0,0,0.6); color: #fff; padding: 10px 20px;
-            border-radius: 30px; font-size: 13px; z-index: 1000;
-            animation: bounce 2s infinite; display: none;
+            background: rgba(0,0,0,0.5); color: #fff; padding: 8px 18px;
+            border-radius: 30px; font-size: 12px; z-index: 1000;
+            animation: bounce 2s infinite; display: none; pointer-events: none;
         }
 
         @keyframes bounce {
             0%, 20%, 50%, 80%, 100% {transform: translateX(-50%) translateY(0);}
-            40% {transform: translateX(-50%) translateY(-10px);}
-            60% {transform: translateX(-50%) translateY(-5px);}
+            40% {transform: translateX(-50%) translateY(-8px);}
+            60% {transform: translateX(-50%) translateY(-4px);}
         }
 
-        .footer-brand { margin: 40px 0 20px; opacity: 0.4; display: flex; align-items: center; gap: 15px; }
-        .footer-brand img { width: 80px; }
+        /* 品牌區域只留 Logo */
+        .footer-brand { margin: 40px 0 30px; opacity: 0.5; display: flex; align-items: center; justify-content: center; width: 100%; }
+        .footer-brand img { width: 110px; height: auto; }
 
-        .music-ctrl { position: fixed; top: 20px; right: 20px; opacity: 0.5; font-size: 11px; border: 1px solid var(--text-color); padding: 5px 12px; z-index: 100001; border-radius: 20px; background: rgba(255,255,255,0.5); }
+        .music-ctrl { position: fixed; top: 20px; right: 20px; opacity: 0.5; font-size: 11px; border: 1px solid var(--text-color); padding: 5px 12px; z-index: 100001; border-radius: 20px; background: rgba(255,255,255,0.6); }
     </style>
 </head>
 <body>
 
     <div class="container">
         <div id="musicToggle" class="music-ctrl" onclick="toggleMusic()">音樂：開</div>
-        
-        <!-- 浮動捲動提示 -->
         <div id="scroll-hint">往下滑動看更多綻放驚喜 ↡</div>
 
         <!-- 視圖：首頁 -->
         <div id="view-home" class="view">
             <div class="home-bg-wrap"><img src="images/home_kv.png"></div>
-            <h1 style="font-family:'Noto Serif TC',serif; font-size:38px; letter-spacing:5px; font-weight:700; margin-bottom: 20px;">走自己的花路吧！</h1>
-            <p style="font-family:'Noto Serif TC',serif; font-size:18px; opacity:0.8; line-height:2; margin-bottom: 60px;">每個人都像一朵花，各有各的天賦<br>好好呵護、細心澆灌，終將綻放最美的姿態</p>
-            <button class="btn-outline" onclick="startQuiz()">點擊試題，看看你是哪朵花兒</button>
-            <div class="footer-brand" style="position:absolute; bottom: 30px;"><img src="hamibook_logo.png"><p>© 2026 Hami Book</p></div>
+            <div style="margin-top: -60px;">
+                <h1 style="font-family:'Noto Serif TC',serif; font-size:38px; letter-spacing:5px; font-weight:700; margin-bottom: 25px;">走自己的花路吧！</h1>
+                <p style="font-family:'Noto Serif TC',serif; font-size:18px; opacity:0.8; line-height:2; margin-bottom: 60px;">每個人都像一朵花，各有各的天賦<br>好好呵護、細心澆灌，終將綻放最美的姿態</p>
+                <button class="btn-outline" onclick="startQuiz()">點擊試題，看看你是哪朵花兒</button>
+            </div>
+            <div class="footer-brand" style="position:absolute; bottom: 30px;"><img src="hamibook_logo.png"></div>
         </div>
 
         <!-- 視圖：測驗頁 -->
@@ -141,12 +149,11 @@
         <!-- 視圖：結果頁 -->
         <div id="view-result" class="view">
             <img id="res-img" src="" class="result-card-img" onclick="playResultMusicManually()">
-            <div style="width: 100%; max-width: 340px; margin-bottom: 50px;">
+            <div style="width: 100%; max-width: 340px; margin-bottom: 60px;">
                 <a href="https://hamibook.com.tw/event/2026bookfair" class="action-btn">領取我的應援書單</a>
                 <button onclick="shareResult()" class="action-btn" style="background:none; color:var(--text-color) !important; border:1px solid var(--text-color);">分享測驗結果</button>
-                <!-- 重新測驗按鈕 -->
                 <button class="restart-btn" onclick="location.reload()">再次測驗，發掘其他可能</button>
-                <div class="footer-brand" style="justify-content: center;"><img src="hamibook_logo.png"><p>© 2026 Hami Book</p></div>
+                <div class="footer-brand" style="margin-top: 50px;"><img src="hamibook_logo.png"></div>
             </div>
         </div>
     </div>
@@ -181,7 +188,19 @@
             else { if (currentStep < questions.length) quizMusic.play(); else resultMusic.play(); }
         }
 
-        function startQuiz() { if (musicEnabled) quizMusic.play().catch(e=>{}); switchView('view-home', 'view-quiz'); setTimeout(showQuestion, 800); }
+        // 首頁啟動時「預熱」音訊
+        function startQuiz() { 
+            if (musicEnabled) {
+                quizMusic.play().catch(e=>{});
+                // 關鍵：在使用者點擊的第一時間「預熱」結果音樂，但不發聲
+                resultMusic.play().then(() => {
+                    resultMusic.pause();
+                    resultMusic.volume = 1;
+                }).catch(e=>{});
+            } 
+            switchView('view-home', 'view-quiz'); 
+            setTimeout(showQuestion, 800); 
+        }
 
         function showQuestion() {
             const q = questions[currentStep];
@@ -193,6 +212,12 @@
         function nextStep(choice) {
             scores[questions[currentStep].score[choice]]++; history.push(questions[currentStep].score[choice]); currentStep++;
             document.getElementById('quiz-content').style.opacity = '0';
+            
+            // 如果是最後一題，點擊瞬間再次「強迫」結果音樂就位
+            if (currentStep === questions.length && musicEnabled) {
+                resultMusic.play().then(() => { resultMusic.pause(); }).catch(e=>{});
+            }
+
             setTimeout(() => {
                 if (currentStep === 4) handleTransition("暫時停下腳步，<br>你正逐漸走入內心深處……", "seed");
                 else if (currentStep === 8) handleTransition("撥開思緒的迷霧，<br>看見更真實的自己……", "sprout");
@@ -222,13 +247,11 @@
         function showResult() {
             const mbti = (scores.E >= scores.I ? "E" : "I") + (scores.N >= scores.S ? "N" : "S") + (scores.F >= scores.T ? "F" : "T") + (scores.P >= scores.J ? "P" : "J");
             
-            // 強制切換音樂機制
             if (musicEnabled) {
                 quizMusic.pause();
+                // 預熱過的音樂現在可以被直接觸發播放
                 resultMusic.currentTime = 0;
-                resultMusic.play().catch(() => {
-                    console.log("iOS 音樂攔截，等待互動中...");
-                });
+                resultMusic.play().catch(() => console.log("等待點擊觸發音訊"));
             }
             
             document.getElementById('res-img').src = `images/${mbti}.jpg`;
@@ -236,10 +259,7 @@
             
             setTimeout(() => { 
                 document.getElementById('res-img').style.opacity = 1; 
-                // 顯示捲動提示
-                const hint = document.getElementById('scroll-hint');
-                hint.style.display = 'block';
-                setTimeout(() => { hint.style.opacity = '0'; setTimeout(()=>hint.style.display='none', 800); }, 5000);
+                document.getElementById('scroll-hint').style.display = 'block';
             }, 1000);
         }
 
@@ -264,15 +284,14 @@
             try {
                 if (navigator.share) { await navigator.share(shareData); } 
                 else { alert(shareData.text + "\n" + shareData.url); }
-            } catch (err) { console.log('Share error'); }
+            } catch (err) { console.log('分享取消'); }
         }
 
         function prevStep() { if (currentStep > 0) { currentStep--; scores[history.pop()]--; document.getElementById('quiz-content').style.opacity = '0'; setTimeout(showQuestion, 600); } }
 
-        // 監聽捲動，隱藏提示
         window.addEventListener('scroll', () => {
             const hint = document.getElementById('scroll-hint');
-            if (window.scrollY > 50) { hint.style.opacity = '0'; setTimeout(()=>hint.style.display='none', 800); }
+            if (window.scrollY > 30) { hint.style.opacity = '0'; setTimeout(()=>hint.style.display='none', 800); }
         });
     </script>
 </body>
