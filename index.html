@@ -21,13 +21,11 @@
             font-family: 'Noto Sans TC', sans-serif;
             color: var(--text-color);
             -webkit-font-smoothing: antialiased;
-            /* 修正手機版捲動問題 */
-            overflow-x: hidden;
-            overflow-y: auto;
+            overflow: hidden; /* 防止橡皮筋效果 */
         }
 
         .container {
-            width: 100%; max-width: 600px; min-height: 100vh;
+            width: 100%; max-width: 600px; height: 100vh;
             margin: 0 auto; display: flex; flex-direction: column;
             position: relative;
         }
@@ -35,89 +33,69 @@
         .view {
             display: none; width: 100%; flex-direction: column;
             align-items: center; text-align: center; opacity: 0;
-            padding: 40px 25px; box-sizing: border-box;
-            transition: opacity 0.8s var(--ease);
-            min-height: 100vh; justify-content: center;
+            padding: 20px 25px; box-sizing: border-box;
+            transition: opacity 0.6s var(--ease);
+            height: 100%; justify-content: center;
+            position: absolute; top: 0; left: 0;
         }
 
-        #view-home { display: flex; opacity: 1; }
+        /* 首頁背景與按鈕防護 */
+        #view-home { display: flex; opacity: 1; z-index: 10; }
+        .home-bg-wrap { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        .home-bg-wrap img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* 修正題目字體與大小（縮小10%） */
-        .question-text { 
-            font-family: 'Noto Serif TC', serif; 
-            font-size: 25px; /* 原 28px */
-            line-height: 1.6; 
-            margin-bottom: 40px; 
-            font-weight: 700; 
-            color: var(--text-color) !important; /* 強制修正藍色問題 */
-        }
-
-        /* 修正選項：跟題目一樣字型但不粗體，強制修正顏色 */
-        .option-btn { 
-            width: 100%; 
-            padding: 20px 25px; 
-            border: 1.5px solid rgba(0,0,0,0.08); 
-            margin-bottom: 16px; 
-            cursor: pointer; 
-            font-family: 'Noto Serif TC', serif; /* 與題目同字型 */
-            font-weight: 400; /* 不必粗體 */
-            font-size: 20px; /* 原 22px，縮小10% */
-            background-color: rgba(255, 255, 255, 0.6); /* 稍微透明不乾白 */
-            text-align: left; 
-            border-radius: 8px; 
-            transition: 0.4s; 
-            color: var(--text-color) !important; /* 強制覆蓋瀏覽器連結藍/綠色 */
+        /* 強制按鈕顏色，防止 iOS 藍色連結化 */
+        button, a, .option-btn {
+            color: var(--text-color) !important;
+            text-decoration: none !important;
             -webkit-tap-highlight-color: transparent;
         }
-        .option-btn:active { background-color: #FFF; border-color: var(--accent-color); color: var(--accent-color) !important; }
 
-        /* 過渡頁：圖片浮現加速 */
+        .btn-outline { 
+            background-color: rgba(255,255,255,0.3); border: 1px solid var(--text-color);
+            padding: 20px 0; width: 85%; max-width: 320px;
+            font-family: 'Noto Serif TC', serif; cursor: pointer; border-radius: 4px; font-size: 19px; 
+            backdrop-filter: blur(5px); transition: 0.4s;
+        }
+
+        /* 題目轉換優化 */
+        #quiz-content { width: 100%; min-height: 350px; transition: opacity 0.4s var(--ease); }
+        .question-text { font-family: 'Noto Serif TC', serif; font-size: 24px; line-height: 1.6; margin-bottom: 35px; font-weight: 700; }
+        .option-btn { 
+            width: 100%; padding: 22px 25px; border: 1.5px solid rgba(0,0,0,0.08); 
+            margin-bottom: 15px; cursor: pointer; font-size: 19px; background: #FFF; 
+            text-align: left; border-radius: 8px; font-family: 'Noto Serif TC', serif;
+        }
+
+        /* 過渡頁速度調整 */
         .view-transition {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: var(--sage-green); z-index: 99999;
             display: none; flex-direction: column; justify-content: center; align-items: center; opacity: 0;
-            transition: opacity 0.4s var(--ease); /* 加快浮現速度 */
+            transition: opacity 0.5s var(--ease);
         }
-        .trans-img-box { width: 75%; max-width: 350px; transition: transform 0.6s var(--ease); }
+        .trans-img-box { width: 75%; max-width: 350px; }
         .trans-img-box img { width: 100%; height: auto; }
 
-        /* 結果頁圖片與內容適配 */
-        .result-card-img { 
-            width: 100%; 
-            height: auto; 
-            max-height: 65vh; /* 縮小圖片高度，確保下方按鈕不見的問題解決 */
-            object-fit: contain; 
-            margin-bottom: 20px; 
-            opacity: 0; 
-            transition: opacity 1s; 
-        }
-
+        /* 結果頁佈局優化 */
+        .result-card-img { width: 100%; max-height: 62vh; object-fit: contain; margin-bottom: 15px; opacity: 0; transition: opacity 1s; }
         .action-btn { 
-            display: block; width: 100%; 
-            background-color: var(--text-color); 
-            color: #fff !important; 
-            text-decoration: none; 
-            padding: 18px 0; 
-            font-family: 'Noto Serif TC', serif; 
-            font-size: 17px; 
-            text-align: center; 
-            border-radius: 4px; 
-            margin-bottom: 12px;
-            border: none;
+            display: block; width: 100%; background-color: var(--text-color); 
+            color: #fff !important; padding: 16px 0; font-family: 'Noto Serif TC', serif; 
+            font-size: 17px; text-align: center; border-radius: 4px; margin-bottom: 10px;
         }
-
         .reset-link { 
-            color: #BBB; font-size: 14px; text-decoration: underline; 
-            background: none; border: none; width: 100%; margin-top: 5px;
+            color: #AAA !important; font-size: 14px; text-decoration: underline !important;
+            background: none; border: none; margin-top: 5px; padding-bottom: 20px;
         }
 
         .footer-brand {
-            margin-top: 40px; padding-bottom: 30px;
+            position: absolute; bottom: 30px; left: 0; width: 100%;
             display: flex; justify-content: center; align-items: center;
-            opacity: 0.4; gap: 15px; width: 100%;
+            opacity: 0.4; gap: 15px;
         }
         .footer-brand img { width: 80px; height: auto; }
-        .footer-brand p { margin: 0; font-size: 10px; color: #999; border-left: 1px solid #CCC; padding-left: 15px; height: 14px; line-height: 14px; }
+        .footer-brand p { margin: 0; font-size: 10px; border-left: 1px solid #CCC; padding-left: 15px; }
 
         .music-ctrl { position: absolute; top: 25px; right: 25px; opacity: 0.4; font-size: 11px; border: 1px solid var(--text-color); padding: 5px 12px; z-index: 100000; border-radius: 20px; }
     </style>
@@ -127,40 +105,36 @@
     <div class="container">
         <div id="musicToggle" class="music-ctrl" onclick="toggleMusic()">音樂：開</div>
 
-        <!-- 視圖：首頁 -->
-        <div id="view-home" class="view" style="display: flex; opacity: 1;">
-            <div style="margin-top: -50px;">
+        <div id="view-home" class="view">
+            <div class="home-bg-wrap"><img src="images/home_kv.png"></div>
+            <div style="z-index: 100;">
                 <h1 style="font-family:'Noto Serif TC',serif; font-size:35px; letter-spacing:5px; font-weight:700;">走自己的花路吧！</h1>
-                <p style="font-family:'Noto Serif TC',serif; font-size:17px; opacity:0.8; line-height:2; margin: 40px 0 60px;">每個人都像一朵花，各有各的天賦<br>好好呵護、細心澆灌，終將綻放最美的姿態</p>
-                <button class="btn-outline" onclick="startQuiz()" style="padding:20px 45px; font-family:'Noto Serif TC',serif; cursor:pointer; border-radius:4px; font-size:18px; border:1px solid var(--text-color); background:rgba(255,255,255,0.3); backdrop-filter:blur(5px); width: 80%;">點擊試題，看看你是哪朵花兒</button>
+                <p style="font-family:'Noto Serif TC',serif; font-size:17px; opacity:0.8; line-height:2; margin: 30px 0 50px;">每個人都像一朵花，各有各的天賦<br>好好呵護、細心澆灌，終將綻放最美的姿態</p>
+                <button class="btn-outline" onclick="startQuiz()">點擊試題，看看你是哪朵花兒</button>
             </div>
             <div class="footer-brand"><img src="hamibook_logo.png"><p>© 2026 Hami Book</p></div>
         </div>
 
-        <!-- 視圖：測驗頁 -->
         <div id="view-quiz" class="view">
-            <div id="quiz-content" style="width: 100%;">
+            <div id="quiz-content">
                 <div class="question-text"></div>
-                <div id="options"></div>
+                <div id="options" style="width: 100%;"></div>
             </div>
-            <div style="margin-top: 50px; font-size: 13px; color: #CCC; text-decoration: underline;" onclick="prevStep()">回到上一步思考</div>
+            <div style="margin-top: 30px; font-size: 13px; color: #BBB; text-decoration: underline;" onclick="prevStep()">回到上一步思考</div>
         </div>
 
-        <!-- 過渡層 -->
         <div id="view-transition" class="view-transition">
             <div class="trans-img-box"><img src="" id="trans-stage-img"></div>
-            <p id="transition-content" style="font-family:'Noto Serif TC',serif; font-size:22px; color:var(--text-color); line-height:2; margin-top:30px;"></p>
+            <p id="transition-content" style="font-family:'Noto Serif TC',serif; font-size:22px; line-height:2; margin-top:25px;"></p>
         </div>
 
-        <!-- 視圖：結果頁 -->
         <div id="view-result" class="view">
             <img id="res-img" src="" class="result-card-img">
-            <div style="width: 100%; max-width: 320px;">
-                <a id="res-btn" href="https://hamibook.com.tw/event/2026bookfair" class="action-btn">領取我的應援書單</a>
+            <div style="width: 100%; max-width: 320px; z-index: 100;">
+                <a href="https://hamibook.com.tw/event/2026bookfair" class="action-btn">領取我的應援書單</a>
                 <button onclick="shareResult()" class="action-btn" style="background:none; color:var(--text-color) !important; border:1px solid var(--text-color);">分享測驗結果</button>
                 <button class="reset-link" onclick="location.reload()">重新測驗</button>
             </div>
-            <div class="footer-brand"><img src="hamibook_logo.png"><p>© 2026 Hami Book</p></div>
         </div>
     </div>
 
@@ -204,18 +178,14 @@
 
         function nextStep(choice) {
             scores[questions[currentStep].score[choice]]++; history.push(questions[currentStep].score[choice]); currentStep++;
-            // 修正：增加消失的緩衝感，不立刻變 0
-            document.getElementById('quiz-content').style.opacity = '0.3';
+            document.getElementById('quiz-content').style.opacity = '0';
             
             setTimeout(() => {
-                document.getElementById('quiz-content').style.opacity = '0';
-                setTimeout(() => {
-                    if (currentStep === 4) handleTransition("暫時停下腳步，<br>你正逐漸走入內心深處……", "seed");
-                    else if (currentStep === 8) handleTransition("撥開思緒的迷霧，<br>看見更真實的自己……", "sprout");
-                    else if (currentStep < questions.length) showQuestion();
-                    else handleTransition("花苞已經結成，<br>你即將迎來綻放時刻", "bud", true);
-                }, 400); // 增加題目切換間隔，避免太急
-            }, 300);
+                if (currentStep === 4) handleTransition("暫時停下腳步，<br>你正逐漸走入內心深處……", "seed");
+                else if (currentStep === 8) handleTransition("撥開思緒的迷霧，<br>看見更真實的自己……", "sprout");
+                else if (currentStep < questions.length) showQuestion();
+                else handleTransition("花苞已經結成，<br>你即將迎來綻放時刻", "bud", true);
+            }, 500);
         }
 
         function handleTransition(text, stage, isFinal = false) {
@@ -224,8 +194,6 @@
             document.getElementById('transition-content').innerHTML = text;
             tImg.src = `images/stage_${stage}.png`;
             tView.style.display = 'flex';
-            
-            // 加速過渡頁浮現
             setTimeout(() => { tView.style.opacity = '1'; }, 50);
 
             setTimeout(() => {
@@ -234,64 +202,46 @@
                     tView.style.display = 'none'; 
                     if (isFinal) showResult();
                     else { quizView.style.display = 'flex'; showQuestion(); }
-                }, 500); 
-            }, 2800);
+                }, 600); 
+            }, 2600);
         }
 
         function showResult() {
             const mbti = (scores.E >= scores.I ? "E" : "I") + (scores.N >= scores.S ? "N" : "S") + (scores.F >= scores.T ? "F" : "T") + (scores.P >= scores.J ? "P" : "J");
             
-            // 修正：結果頁音樂播放
+            // 修正：強制音樂切換觸發
             if (musicEnabled) { 
                 quizMusic.pause(); 
-                resultMusic.currentTime = 0;
-                resultMusic.play().catch(e => console.log("音樂播放受限")); 
+                resultMusic.currentTime = 0; 
+                resultMusic.play().then(() => console.log("Result music playing")).catch(e => console.log("Safari auto-play block"));
             }
             
             document.getElementById('res-img').src = `images/${mbti}.jpg`;
             switchView('view-quiz', 'view-result');
-            setTimeout(() => { 
-                document.getElementById('res-img').style.opacity = 1; 
-                // 修正：按鈕漸顯，避免找不到內容
-                document.querySelectorAll('.action-btn, .reset-link').forEach(el => el.style.opacity = 1);
-            }, 800);
+            setTimeout(() => { document.getElementById('res-img').style.opacity = 1; }, 800);
         }
 
         function switchView(fromId, toId) {
             const f = document.getElementById(fromId), t = document.getElementById(toId);
             f.style.opacity = '0';
-            setTimeout(() => { f.style.display = 'none'; t.style.display = 'flex'; setTimeout(() => { t.style.opacity = '1'; }, 50); }, 600);
+            setTimeout(() => { f.style.display = 'none'; t.style.display = 'flex'; setTimeout(() => { t.style.opacity = '1'; }, 50); }, 650);
         }
 
-        // 修正：呼叫手機原生分享選單
         async function shareResult() {
             const mbti = (scores.E >= scores.I ? "E" : "I") + (scores.N >= scores.S ? "N" : "S") + (scores.F >= scores.T ? "F" : "T") + (scores.P >= scores.J ? "P" : "J");
             const flower = flowerNames[mbti];
             const shareData = {
                 title: '屬於你的花路',
                 text: `我的靈魂花卉是【${flower}】！快來測驗看看你是哪朵花兒，領取專屬應援書單！`,
-                url: window.location.href
+                url: 'https://hamibook.tw/IjwSc' // 指定的分享網址
             };
-
             try {
-                if (navigator.share) {
-                    await navigator.share(shareData);
-                } else {
-                    // 不支援 Web Share API 時的回退方案
-                    alert(shareData.text + "\n" + shareData.url);
-                }
-            } catch (err) {
-                console.log('分享取消或出錯');
-            }
+                if (navigator.share) { await navigator.share(shareData); } 
+                else { alert(shareData.text + "\n" + shareData.url); }
+            } catch (err) { console.log('Share error'); }
         }
 
-        function prevStep() { 
-            if (currentStep > 0) { 
-                currentStep--; scores[history.pop()]--; 
-                document.getElementById('quiz-content').style.opacity = '0'; 
-                setTimeout(showQuestion, 400); 
-            } 
-        }
+        function prevStep() { if (currentStep > 0) { currentStep--; scores[history.pop()]--; document.getElementById('quiz-content').style.opacity = '0'; setTimeout(showQuestion, 500); } }
     </script>
 </body>
 </html>
