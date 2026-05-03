@@ -21,7 +21,8 @@
             font-family: 'Noto Sans TC', sans-serif;
             color: var(--text-color);
             -webkit-font-smoothing: antialiased;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto; /* 允許結果頁捲動 */
         }
 
         .container {
@@ -36,15 +37,17 @@
             padding: 20px 25px; box-sizing: border-box;
             transition: opacity 0.8s var(--ease);
             height: 100%; 
-            /* 修正：確保內容完全垂直居中 */
+            /* 關鍵：確保題目與選項完全垂直置中 */
             justify-content: center; 
             position: absolute; top: 0; left: 0;
         }
 
+        /* 封面圖修復 */
         #view-home { display: flex; opacity: 1; z-index: 10; }
-        .home-bg-wrap { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
-        .home-bg-wrap img { width: 100%; height: 100%; object-fit: cover; }
+        .home-bg-wrap { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+        .home-bg-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
+        /* 防禦 iOS 自動變藍色字體 */
         button, a, .option-btn, .question-text { 
             color: var(--text-color) !important; 
             text-decoration: none !important; 
@@ -58,7 +61,6 @@
             backdrop-filter: blur(8px); transition: 0.4s;
         }
 
-        /* 修正：移除頂部邊距，讓內容在正中央 */
         #quiz-content { width: 100%; transition: opacity 0.5s var(--ease); }
         .question-text { font-family: 'Noto Serif TC', serif; font-size: 24px; line-height: 1.6; margin-bottom: 40px; font-weight: 700; }
         
@@ -68,6 +70,7 @@
             text-align: left; border-radius: 8px; font-family: 'Noto Serif TC', serif;
         }
 
+        /* 過渡頁圖路徑已改為 jpg */
         .view-transition {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: var(--sage-green); z-index: 99999;
@@ -77,15 +80,9 @@
         .trans-img-box { width: 75%; max-width: 350px; }
         .trans-img-box img { width: 100%; height: auto; }
 
-        #view-result { justify-content: flex-start; padding-top: 5dvh; overflow-y: auto; }
-        
-        /* 修正：結果圖先隱藏，等完全加載後再漸顯 */
-        .result-card-img { 
-            width: 100%; height: auto; margin-bottom: 25px; 
-            opacity: 0; /* 預設 0 */
-            transition: opacity 1s; 
-            cursor: pointer; 
-        }
+        /* 結果頁：改為向上對齊並允許捲動，解決按鈕被擋住問題 */
+        #view-result { justify-content: flex-start; padding-top: 5dvh; overflow-y: auto; position: relative; }
+        .result-card-img { width: 100%; height: auto; margin-bottom: 25px; opacity: 0; transition: opacity 1s; cursor: pointer; }
         
         .action-btn { 
             display: block; width: 100%; background-color: var(--text-color); 
@@ -112,6 +109,7 @@
             60% {transform: translateX(-50%) translateY(-4px);}
         }
 
+        /* 品牌區域：純 Logo 化 */
         .footer-brand { margin: 40px 0 30px; opacity: 0.6; display: flex; align-items: center; justify-content: center; width: 100%; }
         .footer-brand img { width: 110px; height: auto; }
 
@@ -124,9 +122,10 @@
         <div id="musicToggle" class="music-ctrl" onclick="toggleMusic()">音樂：開</div>
         <div id="scroll-hint">往下滑動看更多綻放驚喜 ↡</div>
 
+        <!-- 視圖：首頁 (背景圖改為 jpg) -->
         <div id="view-home" class="view">
-            <div class="home-bg-wrap"><img src="images/home_kv.png"></div>
-            <div style="z-index: 10;">
+            <div class="home-bg-wrap"><img src="images/home_kv.jpg"></div>
+            <div style="margin-top: -60px; z-index: 10;">
                 <h1 style="font-family:'Noto Serif TC',serif; font-size:38px; letter-spacing:5px; font-weight:700; margin-bottom: 25px;">走自己的花路吧！</h1>
                 <p style="font-family:'Noto Serif TC',serif; font-size:18px; opacity:0.8; line-height:2; margin-bottom: 60px;">每個人都像一朵花，各有各的天賦<br>好好呵護、細心澆灌，終將綻放最美的姿態</p>
                 <button class="btn-outline" onclick="startQuiz()">點擊試題，看看你是哪朵花兒</button>
@@ -134,6 +133,7 @@
             <div class="footer-brand" style="position:absolute; bottom: 30px;"><img src="hamibook_logo.png"></div>
         </div>
 
+        <!-- 視圖：測驗頁 -->
         <div id="view-quiz" class="view">
             <div id="quiz-content">
                 <div class="question-text"></div>
@@ -142,15 +142,16 @@
             <div style="margin-top: 40px; font-size: 14px; color: #BBB; text-decoration: underline; cursor: pointer;" onclick="prevStep()">回到上一步思考</div>
         </div>
 
+        <!-- 過渡層 -->
         <div id="view-transition" class="view-transition">
             <div class="trans-img-box"><img src="" id="trans-stage-img"></div>
             <p id="transition-content" style="font-family:'Noto Serif TC',serif; font-size:22px; line-height:2; margin-top:25px;"></p>
         </div>
 
+        <!-- 視圖：結果頁 -->
         <div id="view-result" class="view">
-            <!-- 修正：加入 onload 事件處理 -->
             <img id="res-img" src="" class="result-card-img" onload="this.style.opacity=1" onclick="playResultMusicManually()">
-            <div style="width: 100%; max-width: 340px; margin-bottom: 60px; z-index: 10;">
+            <div style="width: 100%; max-width: 340px; margin-bottom: 80px; z-index: 10;">
                 <a href="https://hamibook.com.tw/event/2026bookfair" class="action-btn">領取我的應援書單</a>
                 <button onclick="shareResult()" class="action-btn" style="background:none; color:var(--text-color) !important; border:1px solid var(--text-color);">分享測驗結果</button>
                 <button class="restart-btn" onclick="location.reload()">再次測驗，發掘其他可能</button>
@@ -163,9 +164,9 @@
         const questions = [
             { q: "當你休假前往書店，你通常會……", a: "找個安靜的角落，獨自翻閱書籍，靜靜地思考", b: "習慣找朋友，喜歡討論書本的靈感時刻", score: { a: "I", b: "E" } },
             { q: "呼！好不容易結束一整天疲憊工作，哪種方式最能讓你恢復能量呢？", a: "盡可能推掉邀約，待在家閱讀、看劇，或是聽音樂", b: "找朋友見面聊天，去體驗有趣的事，或分享近況", score: { a: "I", b: "E" } },
-            { q: "你看！那有街頭藝人在表演，你會打算……", a: "稍難站在人群外圍觀察，如果有興趣的話再停留", b: "喜歡給予表演者互動，或在社群即時分享", score: { a: "I", b: "E" } },
+            { q: "你看！那有街頭藝人在表演，你會打算……", a: "稍稍站在人群外圍觀察，如果有興趣的話再停留", b: "喜歡給予表演者互動，或在社群即時分享", score: { a: "I", b: "E" } },
             { q: "挑選小說時，你更容易被哪種內容吸引？", a: "探討哲學、隱喻，挖掘人性深處的虛構世界", b: "情節扎實、細節寫實，而且富有代入感的生命故事", score: { a: "N", b: "S" } },
-            { q: "你覺得「閱讀」是怎麼樣的一件事？", a: "是通往想像力的入口，通過閱讀，能激發未來更多的可能性", b: "閱讀是獲獲實用資訊的管道，能解決目前面臨的難題", score: { a: "N", b: "S" } },
+            { q: "你覺得「閱讀」是怎麼樣的一件事？", a: "是通往想像力的入口，通過閱讀，能激發未來更多的可能性", b: "閱讀是獲取實用資訊的管道，能解決目前面臨的難題", score: { a: "N", b: "S" } },
             { q: "坐在辦公桌前，在思考一個新企劃時，你習慣？", a: "先勾勒出宏觀的未來方向，掌握企劃核心觀念", b: "羅列出具體的執行步驟，再盤點需要的資源", score: { a: "N", b: "S" } },
             { q: "當書籍內容與你的價值觀產生衝突時，你會？", a: "冷靜分析作者的邏輯是否存在漏洞", b: "感受文字帶來的衝擊，思考其背後的社會情感", score: { a: "T", b: "F" } },
             { q: "朋友向你諮詢職涯困惑，你的回應方式通常是？", a: "客觀指出利弊，提供效率最高的解決方案", b: "先安撫對方的焦慮，從情感層面給予支持", score: { a: "T", b: "F" } },
@@ -175,6 +176,7 @@
             { q: "當你即將完成一項長期專案時，你的感覺是？", a: "鬆了一口氣，終於可以按部就班地結案", b: "感到有些不捨，覺得或許還有更多調整空間", score: { a: "J", b: "P" } }
         ];
 
+        // MBTI 正確花卉對應
         const flowerNames = { "ENFJ": "向日葵", "ENFP": "蒲公英", "ENTJ": "劍蘭", "ENTP": "天堂鳥", "ESFJ": "非洲菊", "ESFP": "朱槿", "INFJ": "茉莉", "INFP": "紫羅蘭", "INTJ": "帝王花", "INTP": "紫藤", "ESTP": "卷丹", "ISFJ": "牡丹", "ISFP": "睡蓮", "ISTP": "罌粟花", "ESTJ": "金魚草", "ISTJ": "白山茶" };
 
         let currentStep = 0, scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 }, history = [];
@@ -192,6 +194,7 @@
         function startQuiz() { 
             if (musicEnabled) {
                 quizMusic.play().catch(e=>{});
+                // 預熱音訊
                 resultMusic.play().then(() => { resultMusic.pause(); }).catch(e=>{});
             } 
             switchView('view-home', 'view-quiz'); 
@@ -225,7 +228,8 @@
             const tView = document.getElementById('view-transition'), tImg = document.getElementById('trans-stage-img'), quizView = document.getElementById('view-quiz');
             quizView.style.display = 'none';
             document.getElementById('transition-content').innerHTML = text;
-            tImg.src = `images/stage_${stage}.png`;
+            // 修正：過渡頁圖片改為 jpg
+            tImg.src = `images/stage_${stage}.jpg`;
             tView.style.display = 'flex';
             setTimeout(() => { tView.style.opacity = '1'; }, 50);
 
@@ -245,11 +249,11 @@
             if (musicEnabled) {
                 quizMusic.pause();
                 resultMusic.currentTime = 0;
-                resultMusic.play().catch(() => console.log("等待點擊觸發音訊"));
+                resultMusic.play().catch(() => console.log("iOS 音訊鎖定"));
             }
             
             const resImg = document.getElementById('res-img');
-            resImg.style.opacity = 0; // 先設為 0
+            resImg.style.opacity = 0;
             resImg.src = `images/${mbti}.jpg`;
             
             switchView('view-quiz', 'view-result');
@@ -283,6 +287,7 @@
             } catch (err) { console.log('分享取消'); }
         }
 
+        // 修復：第一題按回退可回到首頁
         function prevStep() { 
             if (currentStep > 0) { 
                 currentStep--; scores[history.pop()]--; 
