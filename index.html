@@ -39,29 +39,31 @@
             min-height: 100vh; position: relative;
         }
 
-        #view-home { display: flex; opacity: 1; justify-content: center; }
-        .home-bg-wrap { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
-        .home-bg-wrap img { width: 100%; height: 100%; object-fit: cover; }
+        /* 封面圖修復：確保 z-index 正確 */
+        #view-home { display: flex; opacity: 1; justify-content: center; z-index: 10; }
+        .home-bg-wrap { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+        .home-bg-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-        /* 防禦 iOS 藍色連結字體 */
-        button, a, .option-btn { 
+        /* 強制防禦：防止 iOS 自動將文字轉為連結藍色 */
+        button, a, .option-btn, .question-text { 
             color: var(--text-color) !important; 
             text-decoration: none !important; 
             -webkit-tap-highlight-color: transparent; 
         }
 
         .btn-outline { 
-            background-color: rgba(255,255,255,0.3); border: 1px solid var(--text-color);
+            background-color: rgba(255,255,255,0.4); border: 1.5px solid var(--text-color);
             padding: 20px 0; width: 85%; max-width: 320px;
             font-family: 'Noto Serif TC', serif; cursor: pointer; border-radius: 4px; font-size: 19px; 
-            backdrop-filter: blur(5px); transition: 0.4s;
+            backdrop-filter: blur(8px); transition: 0.4s;
+            color: var(--text-color) !important;
         }
 
         #quiz-content { width: 100%; min-height: 380px; transition: opacity 0.5s var(--ease); margin-top: 50px; }
-        .question-text { font-family: 'Noto Serif TC', serif; font-size: 24px; line-height: 1.6; margin-bottom: 40px; font-weight: 700; color: var(--text-color) !important; }
+        .question-text { font-family: 'Noto Serif TC', serif; font-size: 24px; line-height: 1.6; margin-bottom: 40px; font-weight: 700; }
         
         .option-btn { 
-            width: 100%; padding: 22px 25px; border: 1.5px solid rgba(0,0,0,0.08); 
+            width: 100%; padding: 22px 25px; border: 1.5px solid rgba(0,0,0,0.1); 
             margin-bottom: 15px; cursor: pointer; font-size: 19px; background: #FFF; 
             text-align: left; border-radius: 8px; font-family: 'Noto Serif TC', serif;
             color: var(--text-color) !important;
@@ -76,7 +78,7 @@
         .trans-img-box { width: 75%; max-width: 350px; }
         .trans-img-box img { width: 100%; height: auto; }
 
-        /* 結果頁優化 */
+        /* 結果頁佈局 */
         #view-result { justify-content: flex-start; padding-top: 50px; }
         .result-card-img { width: 100%; height: auto; margin-bottom: 25px; opacity: 0; transition: opacity 1.2s; cursor: pointer; }
         
@@ -86,14 +88,12 @@
             font-size: 17px; text-align: center; border-radius: 4px; margin-bottom: 12px; border: none;
         }
         
-        /* 重新測驗按鈕 */
         .restart-btn { 
             background: #FFF; border: 1px solid #DDD; color: #888 !important;
             padding: 15px 0; width: 100%; font-size: 15px; border-radius: 4px; margin-top: 15px;
             font-family: 'Noto Serif TC', serif;
         }
 
-        /* 浮動導引提示 */
         #scroll-hint {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
             background: rgba(0,0,0,0.5); color: #fff; padding: 8px 18px;
@@ -107,11 +107,11 @@
             60% {transform: translateX(-50%) translateY(-4px);}
         }
 
-        /* 品牌區域只留 Logo */
-        .footer-brand { margin: 40px 0 30px; opacity: 0.5; display: flex; align-items: center; justify-content: center; width: 100%; }
+        /* 品牌區：僅留 Logo */
+        .footer-brand { margin: 40px 0 30px; opacity: 0.6; display: flex; align-items: center; justify-content: center; width: 100%; }
         .footer-brand img { width: 110px; height: auto; }
 
-        .music-ctrl { position: fixed; top: 20px; right: 20px; opacity: 0.5; font-size: 11px; border: 1px solid var(--text-color); padding: 5px 12px; z-index: 100001; border-radius: 20px; background: rgba(255,255,255,0.6); }
+        .music-ctrl { position: fixed; top: 20px; right: 20px; opacity: 0.6; font-size: 11px; border: 1px solid var(--text-color); padding: 5px 12px; z-index: 100001; border-radius: 20px; background: rgba(255,255,255,0.7); }
     </style>
 </head>
 <body>
@@ -123,7 +123,7 @@
         <!-- 視圖：首頁 -->
         <div id="view-home" class="view">
             <div class="home-bg-wrap"><img src="images/home_kv.png"></div>
-            <div style="margin-top: -60px;">
+            <div style="margin-top: -60px; z-index: 10;">
                 <h1 style="font-family:'Noto Serif TC',serif; font-size:38px; letter-spacing:5px; font-weight:700; margin-bottom: 25px;">走自己的花路吧！</h1>
                 <p style="font-family:'Noto Serif TC',serif; font-size:18px; opacity:0.8; line-height:2; margin-bottom: 60px;">每個人都像一朵花，各有各的天賦<br>好好呵護、細心澆灌，終將綻放最美的姿態</p>
                 <button class="btn-outline" onclick="startQuiz()">點擊試題，看看你是哪朵花兒</button>
@@ -137,7 +137,8 @@
                 <div class="question-text"></div>
                 <div id="options" style="width: 100%;"></div>
             </div>
-            <div style="margin-top: 40px; font-size: 14px; color: #BBB; text-decoration: underline;" onclick="prevStep()">回到上一步思考</div>
+            <!-- 修改：回到上一步的邏輯 -->
+            <div style="margin-top: 40px; font-size: 14px; color: #BBB; text-decoration: underline; cursor: pointer;" onclick="prevStep()">回到上一步思考</div>
         </div>
 
         <!-- 過渡層 -->
@@ -149,7 +150,7 @@
         <!-- 視圖：結果頁 -->
         <div id="view-result" class="view">
             <img id="res-img" src="" class="result-card-img" onclick="playResultMusicManually()">
-            <div style="width: 100%; max-width: 340px; margin-bottom: 60px;">
+            <div style="width: 100%; max-width: 340px; margin-bottom: 60px; z-index: 10;">
                 <a href="https://hamibook.com.tw/event/2026bookfair" class="action-btn">領取我的應援書單</a>
                 <button onclick="shareResult()" class="action-btn" style="background:none; color:var(--text-color) !important; border:1px solid var(--text-color);">分享測驗結果</button>
                 <button class="restart-btn" onclick="location.reload()">再次測驗，發掘其他可能</button>
@@ -188,15 +189,10 @@
             else { if (currentStep < questions.length) quizMusic.play(); else resultMusic.play(); }
         }
 
-        // 首頁啟動時「預熱」音訊
         function startQuiz() { 
             if (musicEnabled) {
                 quizMusic.play().catch(e=>{});
-                // 關鍵：在使用者點擊的第一時間「預熱」結果音樂，但不發聲
-                resultMusic.play().then(() => {
-                    resultMusic.pause();
-                    resultMusic.volume = 1;
-                }).catch(e=>{});
+                resultMusic.play().then(() => { resultMusic.pause(); }).catch(e=>{});
             } 
             switchView('view-home', 'view-quiz'); 
             setTimeout(showQuestion, 800); 
@@ -213,7 +209,6 @@
             scores[questions[currentStep].score[choice]]++; history.push(questions[currentStep].score[choice]); currentStep++;
             document.getElementById('quiz-content').style.opacity = '0';
             
-            // 如果是最後一題，點擊瞬間再次「強迫」結果音樂就位
             if (currentStep === questions.length && musicEnabled) {
                 resultMusic.play().then(() => { resultMusic.pause(); }).catch(e=>{});
             }
@@ -249,7 +244,6 @@
             
             if (musicEnabled) {
                 quizMusic.pause();
-                // 預熱過的音樂現在可以被直接觸發播放
                 resultMusic.currentTime = 0;
                 resultMusic.play().catch(() => console.log("等待點擊觸發音訊"));
             }
@@ -287,7 +281,16 @@
             } catch (err) { console.log('分享取消'); }
         }
 
-        function prevStep() { if (currentStep > 0) { currentStep--; scores[history.pop()]--; document.getElementById('quiz-content').style.opacity = '0'; setTimeout(showQuestion, 600); } }
+        // 修復：第一題按回退可回到首頁
+        function prevStep() { 
+            if (currentStep > 0) { 
+                currentStep--; scores[history.pop()]--; 
+                document.getElementById('quiz-content').style.opacity = '0'; 
+                setTimeout(showQuestion, 600); 
+            } else {
+                switchView('view-quiz', 'view-home');
+            }
+        }
 
         window.addEventListener('scroll', () => {
             const hint = document.getElementById('scroll-hint');
