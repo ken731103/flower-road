@@ -15,7 +15,6 @@
             --ease: cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* 核心修復：防止頁面產生多餘空白 */
         body, html {
             margin: 0; padding: 0; 
             height: 100%; width: 100%;
@@ -23,12 +22,12 @@
             font-family: 'Noto Sans TC', sans-serif;
             color: var(--text-color);
             -webkit-font-smoothing: antialiased;
-            overflow: hidden; /* 全域鎖定，避免亂捲 */
+            overflow: hidden; 
         }
 
         .container {
             width: 100%; max-width: 600px; 
-            height: 100%; /* 使用 100% 替代 dvh 以增加穩定性 */
+            height: 100%;
             margin: 0 auto; position: relative;
             overflow: hidden;
         }
@@ -41,7 +40,7 @@
             transition: opacity 0.6s var(--ease);
             justify-content: center;
             position: absolute; top: 0; left: 0;
-            overflow-y: auto; /* 僅在需要時允許內部分頁捲動 */
+            overflow-y: auto; 
             -webkit-overflow-scrolling: touch;
         }
 
@@ -80,7 +79,6 @@
         .trans-img-box { width: 70%; max-width: 300px; }
         .trans-img-box img { width: 100%; height: auto; }
 
-        /* 結果頁優化：向上對齊，確保捲動順暢 */
         #view-result { justify-content: flex-start; padding-top: 40px; padding-bottom: 60px; }
         .result-card-img { width: 100%; height: auto; margin-bottom: 25px; opacity: 0; transition: opacity 1s; }
         
@@ -90,12 +88,13 @@
             font-size: 17px; text-align: center; border-radius: 4px; margin-bottom: 12px;
         }
         
+        /* 重新測驗按鈕優化 */
         .restart-btn { 
             background: #FFF; border: 1px solid #DDD; color: #888 !important;
             padding: 15px 0; width: 100%; font-size: 14px; border-radius: 4px; margin-top: 10px;
+            cursor: pointer;
         }
 
-        /* 修復：導引提示不再擋住按鈕，並縮短顯示時間 */
         #scroll-hint {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
             background: rgba(0,0,0,0.6); color: #fff; padding: 8px 16px;
@@ -103,6 +102,7 @@
             pointer-events: none; opacity: 0; transition: opacity 0.5s;
         }
 
+        /* 品牌 Logo */
         .footer-brand { margin: 40px 0 20px; opacity: 0.6; display: flex; align-items: center; justify-content: center; width: 100%; }
         .footer-brand img { width: 100px; height: auto; }
 
@@ -115,6 +115,7 @@
         <div id="musicToggle" class="music-ctrl" onclick="toggleMusic()">音樂：開</div>
         <div id="scroll-hint">往下滑動看更多驚喜 ↡</div>
 
+        <!-- 視圖：首頁 -->
         <div id="view-home" class="view">
             <div class="home-bg-wrap"><img src="images/home_kv.jpg"></div>
             <div style="margin-top: -40px;">
@@ -125,6 +126,7 @@
             <div class="footer-brand" style="position:absolute; bottom: 30px;"><img src="hamibook_logo.png"></div>
         </div>
 
+        <!-- 視圖：測驗頁 -->
         <div id="view-quiz" class="view">
             <div id="quiz-content">
                 <div class="question-text"></div>
@@ -133,18 +135,21 @@
             <div style="margin-top: 30px; font-size: 13px; color: #BBB; text-decoration: underline; cursor: pointer;" onclick="prevStep()">回到上一步思考</div>
         </div>
 
+        <!-- 過渡層 -->
         <div id="view-transition" class="view-transition">
             <div class="trans-img-box"><img src="" id="trans-stage-img"></div>
             <p id="transition-content" style="font-family:'Noto Serif TC',serif; font-size:20px; line-height:2; margin-top:20px;"></p>
         </div>
 
+        <!-- 視圖：結果頁 -->
         <div id="view-result" class="view">
             <div id="result-wrapper" style="opacity: 0; transition: opacity 1s var(--ease); width: 100%; display: flex; flex-direction: column; align-items: center;">
                 <img id="res-img" src="" class="result-card-img" onload="this.style.opacity=1" onclick="playResultMusicManually()">
                 <div style="width: 100%; max-width: 340px;">
                     <a href="https://hamibook.com.tw/event/2026bookfair" class="action-btn">領取我的應援書單</a>
                     <button onclick="shareResult()" class="action-btn" style="background:none; color:var(--text-color) !important; border:1px solid var(--text-color);">分享測驗結果</button>
-                    <button class="restart-btn" onclick="location.reload()">再次測驗，發掘其他可能</button>
+                    <!-- 修改：使用平滑重置函式 -->
+                    <button class="restart-btn" onclick="resetQuiz()">再次測驗，發掘其他可能</button>
                     <div class="footer-brand" style="margin-top: 40px;"><img src="hamibook_logo.png"></div>
                 </div>
             </div>
@@ -164,7 +169,7 @@
             { q: "你認為一段好的文字，最核心的價值是？", a: "揭示真理，提供嚴謹且清晰的洞察", b: "觸動心靈，引發讀者深層的情感共鳴", score: { a: "T", b: "F" } },
             { q: "計畫一場旅行時，你的風格是？", a: "精確安排好每日行程與交通動線", b: "確定大方向後，留出餘裕隨心探索", score: { a: "J", b: "P" } },
             { q: "面對待辦清單，你通常如何處理？", a: "依照優先順序嚴格執行，享受完成的成就感", b: "視當下的心情與狀態彈性調整，保持行動自由", score: { a: "J", b: "P" } },
-            { q: "當你即將完成一項長期專案時，你的感覺是？", a: "鬆了一口氣，終於可以按部就班地結案", b: "感到有些不捨，覺得或許還有更多調整空間", score: { a: "J", b: "P" } }
+            { q: "當你即將完成一項長期專案時，你的感覺是？", a: "鬆了一口氣，終於可以按步就班地結案", b: "感到有些不捨，覺得或許還有更多調整空間", score: { a: "J", b: "P" } }
         ];
 
         const flowerNames = { "ENFJ": "向日葵", "ENFP": "蒲公英", "ENTJ": "劍蘭", "ENTP": "天堂鳥", "ESFJ": "非洲菊", "ESFP": "朱槿", "INFJ": "茉莉", "INFP": "紫羅蘭", "INTJ": "帝王花", "INTP": "紫藤", "ESTP": "卷丹", "ISFJ": "牡丹", "ISFP": "睡蓮", "ISTP": "罌粟花", "ESTJ": "金魚草", "ISTJ": "白山茶" };
@@ -173,6 +178,14 @@
         const quizMusic = new Audio('music/quiz_bgm.mp3'), resultMusic = new Audio('music/result_bgm.mp3');
         quizMusic.loop = true; resultMusic.loop = true;
         let musicEnabled = true;
+
+        // 音訊管理機制：強制停止所有音樂
+        function stopAllMusic() {
+            quizMusic.pause();
+            quizMusic.currentTime = 0;
+            resultMusic.pause();
+            resultMusic.currentTime = 0;
+        }
 
         function toggleMusic() {
             musicEnabled = !musicEnabled;
@@ -183,11 +196,23 @@
 
         function startQuiz() { 
             if (musicEnabled) {
+                stopAllMusic(); // 啟動前清空狀態
                 quizMusic.play().catch(e=>{});
                 resultMusic.play().then(() => { resultMusic.pause(); }).catch(e=>{});
             } 
             switchView('view-home', 'view-quiz'); 
             setTimeout(showQuestion, 800); 
+        }
+
+        // 修改：平滑重置函式，解決音訊打架
+        function resetQuiz() {
+            stopAllMusic(); // 關鍵：立刻殺掉所有聲音
+            currentStep = 0;
+            scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+            history = [];
+            document.getElementById('result-wrapper').style.opacity = '0';
+            document.getElementById('res-img').style.opacity = '0';
+            switchView('view-result', 'view-home');
         }
 
         function showQuestion() {
@@ -245,10 +270,8 @@
             
             switchView('view-quiz', 'view-result');
             
-            // 延後顯現整包結果，避免字體先出的閃爍
             setTimeout(() => { 
                 document.getElementById('result-wrapper').style.opacity = 1;
-                // 導引提示在結果頁上方出現，並在 3 秒後自動消失
                 const hint = document.getElementById('scroll-hint');
                 hint.style.opacity = 1;
                 setTimeout(() => { hint.style.opacity = 0; }, 3000);
@@ -259,14 +282,12 @@
             if (musicEnabled && resultMusic.paused) { resultMusic.play(); }
         }
 
-        // 修改 switchView 以減少閃爍感
         function switchView(fromId, toId) {
             const f = document.getElementById(fromId), t = document.getElementById(toId);
             f.style.opacity = '0';
             setTimeout(() => { 
                 f.style.display = 'none'; 
                 t.style.display = 'flex'; 
-                // 確保 DOM 已經準備好再顯現
                 requestAnimationFrame(() => {
                     setTimeout(() => { t.style.opacity = '1'; }, 50);
                 });
