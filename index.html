@@ -12,40 +12,43 @@
             --text-color: #4A4A4A;
             --accent-color: #C5A059;
             --sage-green: #F0F4F2;
-            --ease: cubic-bezier(0.25, 1, 0.5, 1);
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* 核心修復：防止頁面產生多餘空白 */
         body, html {
-            margin: 0; padding: 0; height: 100%;
+            margin: 0; padding: 0; 
+            height: 100%; width: 100%;
             background-color: var(--bg-color);
             font-family: 'Noto Sans TC', sans-serif;
             color: var(--text-color);
             -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
-            overflow-y: auto;
+            overflow: hidden; /* 全域鎖定，避免亂捲 */
         }
 
         .container {
-            width: 100%; max-width: 600px; height: 100dvh;
-            margin: 0 auto; display: flex; flex-direction: column;
-            position: relative;
+            width: 100%; max-width: 600px; 
+            height: 100%; /* 使用 100% 替代 dvh 以增加穩定性 */
+            margin: 0 auto; position: relative;
+            overflow: hidden;
         }
 
         .view {
-            display: none; width: 100%; flex-direction: column;
-            align-items: center; text-align: center; opacity: 0;
+            display: none; width: 100%; height: 100%;
+            flex-direction: column; align-items: center; text-align: center;
             padding: 20px 25px; box-sizing: border-box;
-            transition: opacity 0.8s var(--ease);
-            height: 100%; 
-            justify-content: center; /* 確保內容垂直置中 */
+            opacity: 0; 
+            transition: opacity 0.6s var(--ease);
+            justify-content: center;
             position: absolute; top: 0; left: 0;
+            overflow-y: auto; /* 僅在需要時允許內部分頁捲動 */
+            -webkit-overflow-scrolling: touch;
         }
 
         #view-home { display: flex; opacity: 1; z-index: 10; }
-        .home-bg-wrap { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
-        .home-bg-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .home-bg-wrap { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        .home-bg-wrap img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* 防禦 iOS 自動變藍色字體 */
         button, a, .option-btn, .question-text { 
             color: var(--text-color) !important; 
             text-decoration: none !important; 
@@ -54,16 +57,16 @@
 
         .btn-outline { 
             background-color: rgba(255,255,255,0.4); border: 1.5px solid var(--text-color);
-            padding: 20px 0; width: 85%; max-width: 320px;
+            padding: 18px 0; width: 85%; max-width: 320px;
             font-family: 'Noto Serif TC', serif; cursor: pointer; border-radius: 4px; font-size: 19px; 
-            backdrop-filter: blur(8px); transition: 0.4s;
+            backdrop-filter: blur(8px);
         }
 
-        #quiz-content { width: 100%; transition: opacity 0.5s var(--ease); }
+        #quiz-content { width: 100%; opacity: 0; transition: opacity 0.4s var(--ease); }
         .question-text { font-family: 'Noto Serif TC', serif; font-size: 24px; line-height: 1.6; margin-bottom: 40px; font-weight: 700; }
         
         .option-btn { 
-            width: 100%; padding: 22px 25px; border: 1.5px solid rgba(0,0,0,0.1); 
+            width: 100%; padding: 20px 25px; border: 1.5px solid rgba(0,0,0,0.1); 
             margin-bottom: 15px; cursor: pointer; font-size: 19px; background: #FFF; 
             text-align: left; border-radius: 8px; font-family: 'Noto Serif TC', serif;
         }
@@ -74,40 +77,34 @@
             display: none; flex-direction: column; justify-content: center; align-items: center; opacity: 0;
             transition: opacity 0.5s var(--ease);
         }
-        .trans-img-box { width: 75%; max-width: 350px; }
+        .trans-img-box { width: 70%; max-width: 300px; }
         .trans-img-box img { width: 100%; height: auto; }
 
-        #view-result { justify-content: flex-start; padding-top: 5dvh; overflow-y: auto; }
-        .result-card-img { width: 100%; height: auto; margin-bottom: 25px; opacity: 0; transition: opacity 1s; cursor: pointer; }
+        /* 結果頁優化：向上對齊，確保捲動順暢 */
+        #view-result { justify-content: flex-start; padding-top: 40px; padding-bottom: 60px; }
+        .result-card-img { width: 100%; height: auto; margin-bottom: 25px; opacity: 0; transition: opacity 1s; }
         
         .action-btn { 
             display: block; width: 100%; background-color: var(--text-color); 
             color: #fff !important; padding: 18px 0; font-family: 'Noto Serif TC', serif; 
-            font-size: 17px; text-align: center; border-radius: 4px; margin-bottom: 12px; border: none;
+            font-size: 17px; text-align: center; border-radius: 4px; margin-bottom: 12px;
         }
         
         .restart-btn { 
             background: #FFF; border: 1px solid #DDD; color: #888 !important;
-            padding: 15px 0; width: 100%; font-size: 15px; border-radius: 4px; margin-top: 15px;
-            font-family: 'Noto Serif TC', serif;
+            padding: 15px 0; width: 100%; font-size: 14px; border-radius: 4px; margin-top: 10px;
         }
 
+        /* 修復：導引提示不再擋住按鈕，並縮短顯示時間 */
         #scroll-hint {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            background: rgba(0,0,0,0.5); color: #fff; padding: 8px 18px;
-            border-radius: 30px; font-size: 12px; z-index: 1000;
-            animation: bounce 2s infinite; display: none; pointer-events: none;
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.6); color: #fff; padding: 8px 16px;
+            border-radius: 30px; font-size: 12px; z-index: 100002;
+            pointer-events: none; opacity: 0; transition: opacity 0.5s;
         }
 
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {transform: translateX(-50%) translateY(0);}
-            40% {transform: translateX(-50%) translateY(-8px);}
-            60% {transform: translateX(-50%) translateY(-4px);}
-        }
-
-        /* 品牌 Logo 純化 */
-        .footer-brand { margin: 40px 0 30px; opacity: 0.6; display: flex; align-items: center; justify-content: center; width: 100%; }
-        .footer-brand img { width: 110px; height: auto; }
+        .footer-brand { margin: 40px 0 20px; opacity: 0.6; display: flex; align-items: center; justify-content: center; width: 100%; }
+        .footer-brand img { width: 100px; height: auto; }
 
         .music-ctrl { position: fixed; top: 20px; right: 20px; opacity: 0.6; font-size: 11px; border: 1px solid var(--text-color); padding: 5px 12px; z-index: 100001; border-radius: 20px; background: rgba(255,255,255,0.7); }
     </style>
@@ -116,42 +113,40 @@
 
     <div class="container">
         <div id="musicToggle" class="music-ctrl" onclick="toggleMusic()">音樂：開</div>
-        <div id="scroll-hint">往下滑動看更多綻放驚喜 ↡</div>
+        <div id="scroll-hint">往下滑動看更多驚喜 ↡</div>
 
-        <!-- 視圖：首頁 (大圖改為 jpg) -->
         <div id="view-home" class="view">
             <div class="home-bg-wrap"><img src="images/home_kv.jpg"></div>
-            <div style="margin-top: -60px; z-index: 10;">
-                <h1 style="font-family:'Noto Serif TC',serif; font-size:38px; letter-spacing:5px; font-weight:700; margin-bottom: 25px;">走自己的花路吧！</h1>
-                <p style="font-family:'Noto Serif TC',serif; font-size:18px; opacity:0.8; line-height:2; margin-bottom: 60px;">每個人都像一朵花，各有各的天賦<br>好好呵護、細心澆灌，終將綻放最美的姿態</p>
+            <div style="margin-top: -40px;">
+                <h1 style="font-family:'Noto Serif TC',serif; font-size:35px; letter-spacing:5px; font-weight:700; margin-bottom: 20px;">走自己的花路吧！</h1>
+                <p style="font-family:'Noto Serif TC',serif; font-size:17px; opacity:0.8; line-height:2; margin-bottom: 50px;">每個人都像一朵花，各有各的天賦<br>好好呵護、細心澆灌，終將綻放最美的姿態</p>
                 <button class="btn-outline" onclick="startQuiz()">點擊試題，看看你是哪朵花兒</button>
             </div>
             <div class="footer-brand" style="position:absolute; bottom: 30px;"><img src="hamibook_logo.png"></div>
         </div>
 
-        <!-- 視圖：測驗頁 -->
         <div id="view-quiz" class="view">
             <div id="quiz-content">
                 <div class="question-text"></div>
                 <div id="options" style="width: 100%;"></div>
             </div>
-            <div style="margin-top: 40px; font-size: 14px; color: #BBB; text-decoration: underline; cursor: pointer;" onclick="prevStep()">回到上一步思考</div>
+            <div style="margin-top: 30px; font-size: 13px; color: #BBB; text-decoration: underline; cursor: pointer;" onclick="prevStep()">回到上一步思考</div>
         </div>
 
-        <!-- 過渡層 (圖片改為 jpg) -->
         <div id="view-transition" class="view-transition">
             <div class="trans-img-box"><img src="" id="trans-stage-img"></div>
-            <p id="transition-content" style="font-family:'Noto Serif TC',serif; font-size:22px; line-height:2; margin-top:25px;"></p>
+            <p id="transition-content" style="font-family:'Noto Serif TC',serif; font-size:20px; line-height:2; margin-top:20px;"></p>
         </div>
 
-        <!-- 視圖：結果頁 (大圖改為 jpg) -->
         <div id="view-result" class="view">
-            <img id="res-img" src="" class="result-card-img" onload="this.style.opacity=1" onclick="playResultMusicManually()">
-            <div style="width: 100%; max-width: 340px; margin-bottom: 80px; z-index: 10;">
-                <a href="https://hamibook.com.tw/event/2026bookfair" class="action-btn">領取我的應援書單</a>
-                <button onclick="shareResult()" class="action-btn" style="background:none; color:var(--text-color) !important; border:1px solid var(--text-color);">分享測驗結果</button>
-                <button class="restart-btn" onclick="location.reload()">再次測驗，發掘其他可能</button>
-                <div class="footer-brand" style="margin-top: 50px;"><img src="hamibook_logo.png"></div>
+            <div id="result-wrapper" style="opacity: 0; transition: opacity 1s var(--ease); width: 100%; display: flex; flex-direction: column; align-items: center;">
+                <img id="res-img" src="" class="result-card-img" onload="this.style.opacity=1" onclick="playResultMusicManually()">
+                <div style="width: 100%; max-width: 340px;">
+                    <a href="https://hamibook.com.tw/event/2026bookfair" class="action-btn">領取我的應援書單</a>
+                    <button onclick="shareResult()" class="action-btn" style="background:none; color:var(--text-color) !important; border:1px solid var(--text-color);">分享測驗結果</button>
+                    <button class="restart-btn" onclick="location.reload()">再次測驗，發掘其他可能</button>
+                    <div class="footer-brand" style="margin-top: 40px;"><img src="hamibook_logo.png"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -159,7 +154,6 @@
     <script>
         const questions = [
             { q: "當你休假前往書店，你通常會……", a: "找個安靜的角落，獨自翻閱書籍，靜靜地思考", b: "習慣找朋友，喜歡討論書本的靈感時刻", score: { a: "I", b: "E" } },
-            // 修正：將一整天改為一周
             { q: "呼！好不容易結束一周的疲憊工作，哪種方式最能讓你恢復能量呢？", a: "盡可能推掉邀約，待在家閱讀、看劇，或是聽音樂", b: "找朋友見面聊天，去體驗有趣的事，或分享近況", score: { a: "I", b: "E" } },
             { q: "你看！那有街頭藝人在表演，你會打算……", a: "稍稍站在人群外圍觀察，如果有興趣的話再停留", b: "喜歡給予表演者互動，或在社群即時分享", score: { a: "I", b: "E" } },
             { q: "挑選小說時，你更容易被哪種內容吸引？", a: "探討哲學、隱喻，挖掘人性深處的虛構世界", b: "情節扎實、細節寫實，而且富有代入感的生命故事", score: { a: "N", b: "S" } },
@@ -243,28 +237,40 @@
             if (musicEnabled) {
                 quizMusic.pause();
                 resultMusic.currentTime = 0;
-                resultMusic.play().catch(() => console.log("iOS 音訊限制"));
+                resultMusic.play().catch(() => {});
             }
             
             const resImg = document.getElementById('res-img');
-            resImg.style.opacity = 0;
             resImg.src = `images/${mbti}.jpg`;
             
             switchView('view-quiz', 'view-result');
             
+            // 延後顯現整包結果，避免字體先出的閃爍
             setTimeout(() => { 
-                document.getElementById('scroll-hint').style.display = 'block';
-            }, 1000);
+                document.getElementById('result-wrapper').style.opacity = 1;
+                // 導引提示在結果頁上方出現，並在 3 秒後自動消失
+                const hint = document.getElementById('scroll-hint');
+                hint.style.opacity = 1;
+                setTimeout(() => { hint.style.opacity = 0; }, 3000);
+            }, 800);
         }
 
         function playResultMusicManually() {
             if (musicEnabled && resultMusic.paused) { resultMusic.play(); }
         }
 
+        // 修改 switchView 以減少閃爍感
         function switchView(fromId, toId) {
             const f = document.getElementById(fromId), t = document.getElementById(toId);
             f.style.opacity = '0';
-            setTimeout(() => { f.style.display = 'none'; t.style.display = 'flex'; setTimeout(() => { t.style.opacity = '1'; }, 50); }, 650);
+            setTimeout(() => { 
+                f.style.display = 'none'; 
+                t.style.display = 'flex'; 
+                // 確保 DOM 已經準備好再顯現
+                requestAnimationFrame(() => {
+                    setTimeout(() => { t.style.opacity = '1'; }, 50);
+                });
+            }, 650);
         }
 
         async function shareResult() {
@@ -278,7 +284,7 @@
             try {
                 if (navigator.share) { await navigator.share(shareData); } 
                 else { alert(shareData.text + "\n" + shareData.url); }
-            } catch (err) { console.log('分享取消'); }
+            } catch (err) {}
         }
 
         function prevStep() { 
@@ -290,11 +296,6 @@
                 switchView('view-quiz', 'view-home');
             }
         }
-
-        window.addEventListener('scroll', () => {
-            const hint = document.getElementById('scroll-hint');
-            if (window.scrollY > 30) { hint.style.opacity = '0'; setTimeout(()=>hint.style.display='none', 800); }
-        });
     </script>
 </body>
 </html>
