@@ -16,8 +16,7 @@
         }
 
         body, html {
-            margin: 0; padding: 0; 
-            height: 100%; width: 100%;
+            margin: 0; padding: 0; height: 100%; width: 100%;
             background-color: var(--bg-color);
             font-family: 'Noto Sans TC', sans-serif;
             color: var(--text-color);
@@ -25,50 +24,31 @@
             overflow: hidden; 
         }
 
-        .container {
-            width: 100%; max-width: 600px; 
-            height: 100%;
-            margin: 0 auto; position: relative;
-            overflow: hidden;
-        }
+        .container { width: 100%; max-width: 600px; height: 100%; margin: 0 auto; position: relative; overflow: hidden; }
 
         .view {
             display: none; width: 100%; height: 100%;
             flex-direction: column; align-items: center; text-align: center;
             padding: 20px 25px; box-sizing: border-box;
-            opacity: 0; 
-            transition: opacity 0.6s var(--ease);
-            justify-content: center;
-            position: absolute; top: 0; left: 0;
-            overflow-y: auto; 
-            -webkit-overflow-scrolling: touch;
+            opacity: 0; transition: opacity 0.5s var(--ease);
+            justify-content: center; position: absolute; top: 0; left: 0;
+            overflow-y: auto; -webkit-overflow-scrolling: touch;
+            /* 效能優化：強制硬體加速 */
+            will-change: opacity;
         }
 
         #view-home { display: flex; opacity: 1; z-index: 10; }
         .home-bg-wrap { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
         .home-bg-wrap img { width: 100%; height: 100%; object-fit: cover; }
 
-        button, a, .option-btn, .question-text { 
-            color: var(--text-color) !important; 
-            text-decoration: none !important; 
-            -webkit-tap-highlight-color: transparent; 
-        }
+        button, a, .option-btn { color: var(--text-color) !important; text-decoration: none !important; -webkit-tap-highlight-color: transparent; }
 
-        .btn-outline { 
-            background-color: rgba(255,255,255,0.4); border: 1.5px solid var(--text-color);
-            padding: 18px 0; width: 85%; max-width: 320px;
-            font-family: 'Noto Serif TC', serif; cursor: pointer; border-radius: 4px; font-size: 19px; 
-            backdrop-filter: blur(8px);
-        }
+        .btn-outline { background-color: rgba(255,255,255,0.4); border: 1.5px solid var(--text-color); padding: 18px 0; width: 85%; max-width: 320px; font-family: 'Noto Serif TC', serif; cursor: pointer; border-radius: 4px; font-size: 19px; backdrop-filter: blur(8px); }
 
         #quiz-content { width: 100%; opacity: 0; transition: opacity 0.4s var(--ease); }
         .question-text { font-family: 'Noto Serif TC', serif; font-size: 24px; line-height: 1.6; margin-bottom: 40px; font-weight: 700; }
         
-        .option-btn { 
-            width: 100%; padding: 20px 25px; border: 1.5px solid rgba(0,0,0,0.1); 
-            margin-bottom: 15px; cursor: pointer; font-size: 19px; background: #FFF; 
-            text-align: left; border-radius: 8px; font-family: 'Noto Serif TC', serif;
-        }
+        .option-btn { width: 100%; padding: 20px 25px; border: 1.5px solid rgba(0,0,0,0.1); margin-bottom: 15px; cursor: pointer; font-size: 19px; background: #FFF; text-align: left; border-radius: 8px; font-family: 'Noto Serif TC', serif; }
 
         .view-transition {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -77,32 +57,16 @@
             transition: opacity 0.5s var(--ease);
         }
         .trans-img-box { width: 70%; max-width: 300px; }
-        .trans-img-box img { width: 100%; height: auto; }
+        .trans-img-box img { width: 100%; height: auto; display: block; }
 
         #view-result { justify-content: flex-start; padding-top: 40px; padding-bottom: 60px; }
-        .result-card-img { width: 100%; height: auto; margin-bottom: 25px; opacity: 0; transition: opacity 1s; }
+        .result-card-img { width: 100%; height: auto; margin-bottom: 25px; opacity: 0; transition: opacity 0.8s; }
         
-        .action-btn { 
-            display: block; width: 100%; background-color: var(--text-color); 
-            color: #fff !important; padding: 18px 0; font-family: 'Noto Serif TC', serif; 
-            font-size: 17px; text-align: center; border-radius: 4px; margin-bottom: 12px;
-        }
-        
-        /* 重新測驗按鈕優化 */
-        .restart-btn { 
-            background: #FFF; border: 1px solid #DDD; color: #888 !important;
-            padding: 15px 0; width: 100%; font-size: 14px; border-radius: 4px; margin-top: 10px;
-            cursor: pointer;
-        }
+        .action-btn { display: block; width: 100%; background-color: var(--text-color); color: #fff !important; padding: 18px 0; font-family: 'Noto Serif TC', serif; font-size: 17px; text-align: center; border-radius: 4px; margin-bottom: 12px; }
+        .restart-btn { background: #FFF; border: 1px solid #DDD; color: #888 !important; padding: 15px 0; width: 100%; font-size: 14px; border-radius: 4px; margin-top: 10px; cursor: pointer; }
 
-        #scroll-hint {
-            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-            background: rgba(0,0,0,0.6); color: #fff; padding: 8px 16px;
-            border-radius: 30px; font-size: 12px; z-index: 100002;
-            pointer-events: none; opacity: 0; transition: opacity 0.5s;
-        }
+        #scroll-hint { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.6); color: #fff; padding: 8px 16px; border-radius: 30px; font-size: 12px; z-index: 100002; pointer-events: none; opacity: 0; transition: opacity 0.5s; }
 
-        /* 品牌 Logo */
         .footer-brand { margin: 40px 0 20px; opacity: 0.6; display: flex; align-items: center; justify-content: center; width: 100%; }
         .footer-brand img { width: 100px; height: auto; }
 
@@ -115,7 +79,6 @@
         <div id="musicToggle" class="music-ctrl" onclick="toggleMusic()">音樂：開</div>
         <div id="scroll-hint">往下滑動看更多驚喜 ↡</div>
 
-        <!-- 視圖：首頁 -->
         <div id="view-home" class="view">
             <div class="home-bg-wrap"><img src="images/home_kv.jpg"></div>
             <div style="margin-top: -40px;">
@@ -126,7 +89,6 @@
             <div class="footer-brand" style="position:absolute; bottom: 30px;"><img src="hamibook_logo.png"></div>
         </div>
 
-        <!-- 視圖：測驗頁 -->
         <div id="view-quiz" class="view">
             <div id="quiz-content">
                 <div class="question-text"></div>
@@ -135,20 +97,17 @@
             <div style="margin-top: 30px; font-size: 13px; color: #BBB; text-decoration: underline; cursor: pointer;" onclick="prevStep()">回到上一步思考</div>
         </div>
 
-        <!-- 過渡層 -->
         <div id="view-transition" class="view-transition">
             <div class="trans-img-box"><img src="" id="trans-stage-img"></div>
             <p id="transition-content" style="font-family:'Noto Serif TC',serif; font-size:20px; line-height:2; margin-top:20px;"></p>
         </div>
 
-        <!-- 視圖：結果頁 -->
         <div id="view-result" class="view">
-            <div id="result-wrapper" style="opacity: 0; transition: opacity 1s var(--ease); width: 100%; display: flex; flex-direction: column; align-items: center;">
-                <img id="res-img" src="" class="result-card-img" onload="this.style.opacity=1" onclick="playResultMusicManually()">
+            <div id="result-wrapper" style="opacity: 0; transition: opacity 0.8s var(--ease); width: 100%; display: flex; flex-direction: column; align-items: center;">
+                <img id="res-img" src="" class="result-card-img" onclick="playResultMusicManually()">
                 <div style="width: 100%; max-width: 340px;">
                     <a href="https://hamibook.com.tw/event/2026bookfair" class="action-btn">領取我的應援書單</a>
                     <button onclick="shareResult()" class="action-btn" style="background:none; color:var(--text-color) !important; border:1px solid var(--text-color);">分享測驗結果</button>
-                    <!-- 修改：使用平滑重置函式 -->
                     <button class="restart-btn" onclick="resetQuiz()">再次測驗，發掘其他可能</button>
                     <div class="footer-brand" style="margin-top: 40px;"><img src="hamibook_logo.png"></div>
                 </div>
@@ -169,9 +128,10 @@
             { q: "你認為一段好的文字，最核心的價值是？", a: "揭示真理，提供嚴謹且清晰的洞察", b: "觸動心靈，引發讀者深層的情感共鳴", score: { a: "T", b: "F" } },
             { q: "計畫一場旅行時，你的風格是？", a: "精確安排好每日行程與交通動線", b: "確定大方向後，留出餘裕隨心探索", score: { a: "J", b: "P" } },
             { q: "面對待辦清單，你通常如何處理？", a: "依照優先順序嚴格執行，享受完成的成就感", b: "視當下的心情與狀態彈性調整，保持行動自由", score: { a: "J", b: "P" } },
-            { q: "當你即將完成一項長期專案時，你的感覺是？", a: "鬆了一口氣，終於可以按步就班地結案", b: "感到有些不捨，覺得或許還有更多調整空間", score: { a: "J", b: "P" } }
+            { q: "當你即將完成一項長期專案時，你的感覺是？", a: "鬆了一口氣，終於可以按部就班地結案", b: "感到有些不捨，覺得或許還有更多調整空間", score: { a: "J", b: "P" } }
         ];
 
+        const mbtis = ["ENFJ", "ENFP", "ENTJ", "ENTP", "ESFJ", "ESFP", "INFJ", "INFP", "INTJ", "INTP", "ESTP", "ISFJ", "ISFP", "ISTP", "ESTJ", "ISTJ"];
         const flowerNames = { "ENFJ": "向日葵", "ENFP": "蒲公英", "ENTJ": "劍蘭", "ENTP": "天堂鳥", "ESFJ": "非洲菊", "ESFP": "朱槿", "INFJ": "茉莉", "INFP": "紫羅蘭", "INTJ": "帝王花", "INTP": "紫藤", "ESTP": "卷丹", "ISFJ": "牡丹", "ISFP": "睡蓮", "ISTP": "罌粟花", "ESTJ": "金魚草", "ISTJ": "白山茶" };
 
         let currentStep = 0, scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 }, history = [];
@@ -179,12 +139,31 @@
         quizMusic.loop = true; resultMusic.loop = true;
         let musicEnabled = true;
 
-        // 音訊管理機制：強制停止所有音樂
+        // --- 深度優化：圖片快取管理 ---
+        const imageCache = {};
+        function preloadImage(url) {
+            if (imageCache[url]) return Promise.resolve(imageCache[url]);
+            const img = new Image();
+            img.src = url;
+            return img.decode().then(() => {
+                imageCache[url] = img;
+                return img;
+            });
+        }
+
+        // 第一階段：預載過渡頁
+        function preloadTransitions() {
+            ["seed", "sprout", "bud"].forEach(s => preloadImage(`images/stage_${s}.jpg`));
+        }
+
+        // 第二階段：測驗中段偷偷載入結果頁
+        function preloadResults() {
+            mbtis.forEach(m => preloadImage(`images/${m}.jpg`));
+        }
+
         function stopAllMusic() {
-            quizMusic.pause();
-            quizMusic.currentTime = 0;
-            resultMusic.pause();
-            resultMusic.currentTime = 0;
+            quizMusic.pause(); quizMusic.currentTime = 0;
+            resultMusic.pause(); resultMusic.currentTime = 0;
         }
 
         function toggleMusic() {
@@ -195,8 +174,9 @@
         }
 
         function startQuiz() { 
+            preloadTransitions(); // 點擊開始後立刻預載過渡
             if (musicEnabled) {
-                stopAllMusic(); // 啟動前清空狀態
+                stopAllMusic();
                 quizMusic.play().catch(e=>{});
                 resultMusic.play().then(() => { resultMusic.pause(); }).catch(e=>{});
             } 
@@ -204,9 +184,8 @@
             setTimeout(showQuestion, 800); 
         }
 
-        // 修改：平滑重置函式，解決音訊打架
         function resetQuiz() {
-            stopAllMusic(); // 關鍵：立刻殺掉所有聲音
+            stopAllMusic();
             currentStep = 0;
             scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
             history = [];
@@ -220,6 +199,9 @@
             document.querySelector('.question-text').innerText = q.q;
             document.getElementById('options').innerHTML = `<button class="option-btn" onclick="nextStep('a')">${q.a}</button><button class="option-btn" onclick="nextStep('b')">${q.b}</button>`;
             setTimeout(() => { document.getElementById('quiz-content').style.opacity = '1'; }, 100);
+            
+            // 測驗過半，開始載入重頭戲結果圖
+            if (currentStep === 6) preloadResults();
         }
 
         function nextStep(choice) {
@@ -235,52 +217,56 @@
                 else if (currentStep === 8) handleTransition("撥開思緒的迷霧，<br>看見更真實的自己……", "sprout");
                 else if (currentStep < questions.length) showQuestion();
                 else handleTransition("花苞已經結成，<br>你即將迎來綻放時刻", "bud", true);
-            }, 600);
+            }, 500);
         }
 
+        // --- 優化：過渡頁圖片解碼後才顯現 ---
         function handleTransition(text, stage, isFinal = false) {
             const tView = document.getElementById('view-transition'), tImg = document.getElementById('trans-stage-img'), quizView = document.getElementById('view-quiz');
-            quizView.style.display = 'none';
-            document.getElementById('transition-content').innerHTML = text;
-            tImg.src = `images/stage_${stage}.jpg`;
-            tView.style.display = 'flex';
-            setTimeout(() => { tView.style.opacity = '1'; }, 50);
+            const imgUrl = `images/stage_${stage}.jpg`;
 
-            setTimeout(() => {
-                tView.style.opacity = '0'; 
-                setTimeout(() => { 
-                    tView.style.display = 'none'; 
-                    if (isFinal) showResult();
-                    else { quizView.style.display = 'flex'; showQuestion(); }
-                }, 600); 
-            }, 2600);
+            preloadImage(imgUrl).then(() => {
+                quizView.style.display = 'none';
+                document.getElementById('transition-content').innerHTML = text;
+                tImg.src = imgUrl;
+                tView.style.display = 'flex';
+                requestAnimationFrame(() => {
+                    setTimeout(() => { tView.style.opacity = '1'; }, 50);
+                });
+
+                setTimeout(() => {
+                    tView.style.opacity = '0'; 
+                    setTimeout(() => { 
+                        tView.style.display = 'none'; 
+                        if (isFinal) showResult();
+                        else { quizView.style.display = 'flex'; showQuestion(); }
+                    }, 600); 
+                }, 2600);
+            });
         }
 
+        // --- 優化：結果圖解碼後才整包浮現 ---
         function showResult() {
             const mbti = (scores.E >= scores.I ? "E" : "I") + (scores.N >= scores.S ? "N" : "S") + (scores.F >= scores.T ? "F" : "T") + (scores.P >= scores.J ? "P" : "J");
-            
-            if (musicEnabled) {
-                quizMusic.pause();
-                resultMusic.currentTime = 0;
-                resultMusic.play().catch(() => {});
-            }
-            
             const resImg = document.getElementById('res-img');
-            resImg.src = `images/${mbti}.jpg`;
+            const imgUrl = `images/${mbti}.jpg`;
             
-            switchView('view-quiz', 'view-result');
-            
-            setTimeout(() => { 
-                document.getElementById('result-wrapper').style.opacity = 1;
-                const hint = document.getElementById('scroll-hint');
-                hint.style.opacity = 1;
-                setTimeout(() => { hint.style.opacity = 0; }, 3000);
-            }, 800);
+            if (musicEnabled) { quizMusic.pause(); resultMusic.currentTime = 0; resultMusic.play().catch(() => {}); }
+
+            preloadImage(imgUrl).then(() => {
+                resImg.src = imgUrl;
+                switchView('view-quiz', 'view-result');
+                setTimeout(() => { 
+                    resImg.style.opacity = 1;
+                    document.getElementById('result-wrapper').style.opacity = 1;
+                    const hint = document.getElementById('scroll-hint');
+                    hint.style.opacity = 1;
+                    setTimeout(() => { hint.style.opacity = 0; }, 3000);
+                }, 800);
+            });
         }
 
-        function playResultMusicManually() {
-            if (musicEnabled && resultMusic.paused) { resultMusic.play(); }
-        }
+        function playResultMusicManually() { if (musicEnabled && resultMusic.paused) { resultMusic.play(); } }
 
         function switchView(fromId, toId) {
             const f = document.getElementById(fromId), t = document.getElementById(toId);
@@ -291,7 +277,7 @@
                 requestAnimationFrame(() => {
                     setTimeout(() => { t.style.opacity = '1'; }, 50);
                 });
-            }, 650);
+            }, 600);
         }
 
         async function shareResult() {
@@ -302,10 +288,7 @@
                 text: `我的靈魂花卉是【${flower}】！快來測驗看看你是哪朵花兒，領取專屬應援書單！`,
                 url: 'https://hamibook.tw/IjwSc'
             };
-            try {
-                if (navigator.share) { await navigator.share(shareData); } 
-                else { alert(shareData.text + "\n" + shareData.url); }
-            } catch (err) {}
+            try { if (navigator.share) { await navigator.share(shareData); } else { alert(shareData.text + "\n" + shareData.url); } } catch (err) {}
         }
 
         function prevStep() { 
@@ -313,9 +296,7 @@
                 currentStep--; scores[history.pop()]--; 
                 document.getElementById('quiz-content').style.opacity = '0'; 
                 setTimeout(showQuestion, 600); 
-            } else {
-                switchView('view-quiz', 'view-home');
-            }
+            } else { switchView('view-quiz', 'view-home'); }
         }
     </script>
 </body>
